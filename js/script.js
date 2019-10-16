@@ -186,7 +186,7 @@ function addClickListenersToTags(){
 
   /* END LOOP: for each link */
   }
-
+}
   function generateAuthors(){
   /* find all authors */
     const authorArticles = document.querySelectorAll(optArticleSelector);
@@ -203,7 +203,7 @@ function addClickListenersToTags(){
       let html = '';
 
       /* get tags from data-tags attribute */
-      const articleAuthor = authorArticle.getAttribute('data-authors');
+      const articleAuthor = authorArticle.getAttribute('data-author');
       const linkHTML = '<li><a href="#author-' + articleAuthor + '">' + articleAuthor  + '</a></li>';
       html = html + linkHTML;
       authorList.innerHTML = html;
@@ -246,6 +246,7 @@ function addClickListenersToTags(){
       /* execute function "generateTitleLinks" with author selector as argument */
       generateTitleLinks('[data-author="' + author + '"]');
     }
+  }
 
     function addClickListenersToAuthors(){
       /* find all links to tags */
@@ -264,5 +265,3 @@ function addClickListenersToTags(){
     addClickListenersToTags();
     generateAuthors();
     addClickListenersToAuthors();
-  }
-}
