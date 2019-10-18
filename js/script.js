@@ -143,6 +143,8 @@ function generateTags(){
   }
   /* [NEW] find list of tags in right column */
   const tagList = document.querySelector(optTagsListSelector);
+  const tagsParams = calculateParams(allTags);
+  console.log('tagsParams:', tagsParams);
 
   /*[NEW] create variable for all links HTML code*/
   let allTagsHTML = '';
