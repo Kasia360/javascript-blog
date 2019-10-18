@@ -117,6 +117,10 @@ if(tags[tag] < params.min){
   return params;
 }
 
+function calculateTagClass(count, params){
+
+}
+
 function generateTags(){
   /* [NEW] create a new variable allTags with an empty object */
   let allTags = {};
@@ -174,7 +178,9 @@ function generateTags(){
   /* [NEW] START LOOP: for each tag in allTags: */
   for (let tag in allTags) {
     /*[NEW] generate code of a link and add it to allTagsHTML */
-    allTagsHTML += '<li><a href="#tag-' + tag + '">' + allTags[tag] + '</a></li>' + ' ';
+    const tagLinkHTML = '<li><a class>"' + calculateTagClass(allTags[tag], tagsParams) + '" href="#tag-' + tag + '">' + tag + '</a></li>';
+    allTagsHTML += '<li><a class ="tag-size-' + calculateTagClass(allTags[tag], tagsParams) +'" href="#tag-' + tag + '"><span>' + tag + '</span></a>' + ' (' + allTags[tag] + ') </li>';
+
   }
   /* [NEW] END LOOP: for each tag in allTags: */
 
