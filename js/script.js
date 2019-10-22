@@ -54,9 +54,10 @@ const optArticleSelector = '.post',
   optArticleTagSelector = '.post-tags a',
   optArticleAuthorSelector = '.post-author',
   optArticleAuthorSelectorLink = '.post-author a',
-  optTagsListSelector = '.tags a',
-  optCloudClassCount = 5;
-  //optCloudClassPrefix = 'tag-size-';
+  optTagsListSelector = '.tags',
+  optAuthorsListSelector = '.list.authors a',
+  optCloudClassCount = 5,
+  optCloudClassPrefix = 'tag-size-';
 
 function generateTitleLinks(customSelector = ''){
 
@@ -156,7 +157,7 @@ function generateTags(){
       html = html + linkHTML;
 
       /* [NEW] check if this link is NOT already in allTags */
-      if(!allTags.hasOwnProperty(tag)){
+      if(!allTags.hasOwnProperty(tag)){ // eslint-disable-line
         /* [NEW] add generated code to allTags object */
         allTags[tag] = 1;
       } else {
@@ -250,7 +251,34 @@ function addClickListenersToTags(){
   /* END LOOP: for each link */
   }
 }
+
+function calculateAuthorsParams(authors) {
+  const params = {
+    max: 0,
+    min: 999999
+  }
+  for (let author in authors) {
+    if (authors[author] > params.max) {
+      params.max = authors[author];
+    }
+    if (authors[author] < params.min) {
+      params.min = authors[author];
+    }
+  }
+  return params;
+}
+
+function calculateAuthorClass(count, params){
+  const normalizedCount = count - params.min;
+  const normalizedMax = params.max - params.min;
+  const percentage = normalizedCount / normalizedMax;
+  const classNumber = Math.floor( percentage * (optCloudClassCount - 1) + 1 );
+  return classNumber;
+}
+
 function generateAuthors(){
+  /* [NEW] create a new variable allAuthors with an empty object */
+  let allAuthors = {};
   /* find all authors */
   const authorArticles = document.querySelectorAll(optArticleSelector);
 
@@ -269,10 +297,32 @@ function generateAuthors(){
     const articleAuthor = authorArticle.getAttribute('data-author');
     const linkHTML = '<li><a href="#author-' + articleAuthor + '">' + articleAuthor  + '</a></li>';
     html = html + linkHTML;
+    if (!allAuthors.hasOwnProperty(articleAuthor)) {// eslint-disable-line
+      /* [NEW] add generated code to allAuthors array */
+      allAuthors[articleAuthor] = 1;
+      } else {
+         allAuthors[articleAuthor]++;
+       }
+       /* insert HTML of all the links into the author wrapper */
     authorList.innerHTML = html;
 
-    /* END LOOP: for every article: */
+    /* END LOOP: for every author: */
   }
+  /* [NEW] find list of authors in right column */
+  const authorCloudList = document.querySelector('.authors');
+  const authorParams = calculateAuthorsParams(allAuthors);
+  let allAuthorsHTML = ' ';
+  console.log('allAuthorsHTML:', allAuthorsHTML);
+  /* [NEW] START LOOP: for each author in allAuthors: */
+  for (let articleAuthor in allAuthors) {
+     /*[NEW] generate code of a link and add it to allTagsHTML */
+     const authorLinkHTML = '<li><a class ="tag-size-' + calculateAuthorClass(allAuthors[articleAuthor], authorParams) +'" href="#author-' + articleAuthor + '">' + articleAuthor + '</a></li>' + ' ';
+     console.log('authorLinkHTML:', authorLinkHTML);
+     allAuthorsHTML += authorLinkHTML;
+   }
+/* [NEW] add html from allAuthors to authorList */
+ authorCloudList.innerHTML = allAuthorsHTML;
+ console.log('allAuthorsHTML:', allAuthorsHTML);
 }
 
 function authorClickHandler(event){
@@ -306,9 +356,9 @@ function authorClickHandler(event){
   for (let authorLink of authorLinks) {
     authorLink.classList.add('active');
 
-    /* execute function "generateTitleLinks" with author selector as argument */
-    generateTitleLinks('[data-author="' + author + '"]');
   }
+  /* execute function "generateTitleLinks" with author selector as argument */
+  generateTitleLinks('[data-author="' + author + '"]');
 }
 
 function addClickListenersToAuthors(){
@@ -320,6 +370,7 @@ function addClickListenersToAuthors(){
 
     /* add tagClickHandler as event listener for that link */
     author.addEventListener('click', authorClickHandler);
+    console.log('author:',author);
   }
   /* END LOOP: for each link */
 }
