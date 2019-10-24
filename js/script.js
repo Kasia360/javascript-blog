@@ -7,6 +7,10 @@ document.getElementById('test-button').addEventListener('click', function(){
 });
 */
 
+const templates = {
+  articleLink: Handlebars.compile(document.querySelector('#template-article-link').innerHTML)
+}
+
 const titleClickHandler = function(event){
   event.preventDefault();
   const clickedElement = this;
@@ -55,7 +59,7 @@ const optArticleSelector = '.post',
   optArticleAuthorSelector = '.post-author',
   optArticleAuthorSelectorLink = '.post-author a',
   optTagsListSelector = '.tags',
-  optAuthorsListSelector = '.list.authors a',
+  optAuthorsListSelector = '.list.authors',
   optCloudClassCount = 5,
   optCloudClassPrefix = 'tag-size-';
 
@@ -79,8 +83,10 @@ function generateTitleLinks(customSelector = ''){
     console.log('articleTitle', articleId);
 
     /* create HTML of the link */
-    const linkHTML = '<li><a href="#' + articleId + '"><span>' + articleTitle + '</span></a></li>';
-    console.log('linkHTML', linkHTML);
+    //const linkHTML = '<li><a href="#' + articleId + '"><span>' + articleTitle + '</span></a></li>';
+    //console.log('linkHTML', linkHTML);
+    const linkHTMLData = {id: articleId, title: articleTitle};
+const linkHTML = templates.articleLink(linkHTMLData);
 
     /* insert link into titleList */
     /*titleList.insertAdjacentHTML('beforebegin', linkHTML);
@@ -256,7 +262,7 @@ function calculateAuthorsParams(authors) {
   const params = {
     max: 0,
     min: 999999
-  }
+  };
   for (let author in authors) {
     if (authors[author] > params.max) {
       params.max = authors[author];
@@ -295,15 +301,19 @@ function generateAuthors(){
 
     /* get tags from data-tags attribute */
     const articleAuthor = authorArticle.getAttribute('data-author');
-    const linkHTML = '<li><a href="#author-' + articleAuthor + '">' + articleAuthor  + '</a></li>';
+    //const linkHTML = '<li><a href="#author-' + articleAuthor + '">' + articleAuthor  + '</a></li>';
+
+    const linkHTMLData = {id: articleAuthor,title: articleAuthor};
+        const linkHTML = templates.authorLink(linkHTMLData);
+
     html = html + linkHTML;
     if (!allAuthors.hasOwnProperty(articleAuthor)) {// eslint-disable-line
       /* [NEW] add generated code to allAuthors array */
       allAuthors[articleAuthor] = 1;
-      } else {
-         allAuthors[articleAuthor]++;
-       }
-       /* insert HTML of all the links into the author wrapper */
+    } else {
+      allAuthors[articleAuthor]++;
+    }
+    /* insert HTML of all the links into the author wrapper */
     authorList.innerHTML = html;
 
     /* END LOOP: for every author: */
@@ -315,14 +325,14 @@ function generateAuthors(){
   console.log('allAuthorsHTML:', allAuthorsHTML);
   /* [NEW] START LOOP: for each author in allAuthors: */
   for (let articleAuthor in allAuthors) {
-     /*[NEW] generate code of a link and add it to allTagsHTML */
-     const authorLinkHTML = '<li><a class ="tag-size-' + calculateAuthorClass(allAuthors[articleAuthor], authorParams) +'" href="#author-' + articleAuthor + '">' + articleAuthor + '</a></li>' + ' ';
-     console.log('authorLinkHTML:', authorLinkHTML);
-     allAuthorsHTML += authorLinkHTML;
-   }
-/* [NEW] add html from allAuthors to authorList */
- authorCloudList.innerHTML = allAuthorsHTML;
- console.log('allAuthorsHTML:', allAuthorsHTML);
+    /*[NEW] generate code of a link and add it to allTagsHTML */
+    const authorLinkHTML = '<li><a class ="tag-size-' + calculateAuthorClass(allAuthors[articleAuthor], authorParams) +'" href="#author-' + articleAuthor + '">' + articleAuthor + '</a></li>' + ' ';
+    console.log('authorLinkHTML:', authorLinkHTML);
+    allAuthorsHTML += authorLinkHTML;
+  }
+  /* [NEW] add html from allAuthors to authorList */
+  authorCloudList.innerHTML = allAuthorsHTML;
+  console.log('allAuthorsHTML:', allAuthorsHTML);
 }
 
 function authorClickHandler(event){
@@ -363,7 +373,7 @@ function authorClickHandler(event){
 
 function addClickListenersToAuthors(){
   /* find all links to tags */
-  const linksToAuthors = document.querySelectorAll(optArticleAuthorSelector + optArticleAuthorSelectorLink);
+  const linksToAuthors = document.querySelectorAll(optArticleAuthorSelectorLink + optAuthorsListSelector);
 
   /* START LOOP: for each link */
   for (let author of linksToAuthors) {
