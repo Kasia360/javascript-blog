@@ -11,7 +11,7 @@
     "test": "npm-run-all test:*",
     "test:html": "globstar nu-html-checker *.html",
     "test:js": "eslint --fix js/",
-    "test:scss": "stylelint sass/",
+    "test:scss": "stylelint --fix sass/",
     "build": "npm-run-all build:* test",
     "build:sass": "node-sass --output-style compact -o css sass",
     "build:autoprefixer": "autoprefixer-cli css/style.css",
