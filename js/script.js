@@ -64,9 +64,9 @@ const optArticleSelector = '.post',
   optTitleSelector = '.post-title',
   optTitleListSelector = '.titles',
   optArticleTagsSelector = '.post-tags .list',
-  optArticleTagSelector = '.post-tags a',
+  optArticleTagSelector = 'a[href^="#tag-"]', //optArticleTagSelector = '.post-tags a',
   optArticleAuthorSelector = '.post-author',
-  optArticleAuthorSelectorLink = '.post-author a',
+  optArticleAuthorSelectorLink = 'a[href^="#author-"]', //optArticleAuthorSelectorLink = '.post-author a',
   optTagsListSelector = '.tags',
   optAuthorsListSelector = '.list.authors',
   optCloudClassCount = 5;
@@ -398,7 +398,8 @@ function authorClickHandler(event){
 
 function addClickListenersToAuthors(){
   /* find all links to tags */
-  const linksToAuthors = document.querySelectorAll(optArticleAuthorSelectorLink + optAuthorsListSelector);
+const linksToAuthors = document.querySelectorAll(optArticleAuthorSelectorLink);
+//const linksToAuthors = document.querySelectorAll(optArticleAuthorSelectorLink + optAuthorsListSelector);
 
   /* START LOOP: for each link */
   for (let author of linksToAuthors) {
